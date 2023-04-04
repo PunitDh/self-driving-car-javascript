@@ -25,6 +25,10 @@ button:hover {
   color: white;
 }
 
+button:active {
+  background-color: darkblue;
+}
+
 #car-canvas {
   background-color: lightgray;
 }
