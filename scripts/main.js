@@ -3,11 +3,12 @@ function $(...args) {
   return args.map((arg) => document.getElementById(arg));
 }
 
-const N_CARS = 1200;
-const N_TRAFFIC = 50;
+const N_CARS = 1000;
+const N_TRAFFIC = 40;
 const MUTATE = 0.2;
 const TRAFFIC_RANDOM = true;
 const SENSORS_VISIBLE = true;
+const RELOAD_COUNTER = 15;
 
 const [carCanvas, networkCanvas] = $("car-canvas", "network-canvas");
 carCanvas.width = 200;
@@ -68,7 +69,7 @@ const traffic = TRAFFIC_RANDOM
       new Car(road.getLaneCenter(1), -1300, 30, 50, ControlType.DUMMY, 2),
     ];
 
-let reloadCounter = 30;
+let reloadCounter = RELOAD_COUNTER;
 
 setInterval(() => {
   reloadCounter--;
@@ -104,7 +105,7 @@ function animate(time) {
     traffic[i].update(road.borders, []);
   }
 
-  console.log({reloadCounter, cars: cars.length, traffic: traffic.length})
+  console.log({ reloadCounter, cars: cars.length, traffic: traffic.length });
 
   if (reloadCounter <= 0) {
     location.reload();
@@ -126,16 +127,22 @@ function animate(time) {
   traffic.forEach((car, i) => {
     if (car.y > bestCar.y + 300) {
       traffic.splice(i, 1);
-      reloadCounter = 30;
+      reloadCounter = RELOAD_COUNTER;
       if (traffic.length <= 0) {
         if (N_CARS > 1) {
           save();
         }
         location.reload();
-        try{
-        localStorage.setItem("carsSurvived", JSON.stringify([...JSON.parse(localStorage.getItem("carsSurvived")), cars.length]))
+        try {
+          localStorage.setItem(
+            "carsSurvived",
+            JSON.stringify([
+              ...JSON.parse(localStorage.getItem("carsSurvived")),
+              cars.length,
+            ])
+          );
         } catch (e) {
-          console.error("error")
+          console.error("error");
         }
       }
     }
